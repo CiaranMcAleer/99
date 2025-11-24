@@ -14,31 +14,24 @@ local Point = geo.Point
 local _99 = {}
 _99.__index = _99
 
---- @param opts _99Options
---- @return _99
-function _99:new(opts)
-	return setmetatable({}, self)
-end
-
-function _99:fill_in_function()
-	print("fill_in_function")
+function _99.fill_in_function()
 	local ts = editor.treesitter
 	local cursor = Point:from_cursor()
-	local scopes = ts.scopes(cursor)
-	local buffer = vim.api.nvim_get_current_buf()
+	local scopes = ts.function_scopes(cursor)
 
-    if scopes == nil then
-        Logger:warn("no scope")
-        return
-    end
-
-	for _, range in ipairs(scopes.range) do
-		print("RANGE",range:to_text())
+	if scopes == nil or #scopes.range == 0 then
+		Logger:warn("fill_in_function: unable to find any containing function")
+		error("you cannot call fill_in_function not in a function")
 	end
+
+	local range = scopes.range[#scopes.range]
+	local open_code_query = {
+		range:to_text(),
+	}
 end
 
 --- @param opts _99Options?
-local function init(opts)
+function _99.init(opts)
 	opts = opts or {}
 	local logger = opts.logger
 	if logger then
@@ -49,13 +42,8 @@ local function init(opts)
 			Logger:file_sink(logger.path)
 		end
 	end
-
-	local nn = _99:new(opts)
-
-	return nn
 end
 
-local nn = init()
-nn:fill_in_function()
+_99.fill_in_function()
 
-return init
+return _99
