@@ -132,17 +132,17 @@ function Logger:configure(opts)
     end
 
     if opts.level then
-        Logger:set_level(opts.level)
+        self:set_level(opts.level)
     end
 
     if opts.path then
-        Logger:file_sink(opts.path)
+        self:file_sink(opts.path)
     else
-        Logger:print_sink()
+        self:print_sink()
     end
 
     if opts.print_on_error then
-        Logger:on_error_print_message()
+        self:on_error_print_message()
     end
 end
 

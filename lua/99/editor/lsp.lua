@@ -41,7 +41,7 @@ local function get_lsp_definitions(buffer, position, cb)
 end
 
 --- @class Lsp
---- @field config _99Options
+--- @field config _99.Options
 local Lsp = {}
 Lsp.__index = Lsp
 

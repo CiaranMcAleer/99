@@ -100,8 +100,13 @@ function Scope:has_scope()
 	return #self.range > 0
 end
 
---- @return Range | nil
+--- @return TSNode | nil
 function Scope:get_inner_scope()
+    return self.scope[#self.scope]
+end
+
+--- @return Range | nil
+function Scope:get_inner_range()
     return self.range[#self.range]
 end
 

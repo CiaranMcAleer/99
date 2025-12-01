@@ -1,3 +1,5 @@
+local Logger = require("99.logger.logger")
+
 --- TODO: some people change their current working directory as they open new
 --- directories.  if this is still the case in neovim land, then we will need
 --- to make the _99_state have the project directory.
@@ -34,16 +36,38 @@ function Context:add_md_file_name(md_file_name)
 	return self
 end
 
-function Context:_read_md_files()
-	--- @ai use location's buffer's full path and walk back until we are at cwd
-	--- @ai and read each of the md_file_names.  if it exists then add it to
-	--- @ai ai_context.
+--- @param location _99.Location
+function Context:_read_md_files(location)
+	local cwd = vim.uv.cwd()
+	local dir = vim.fn.fnamemodify(location.full_path, ":h")
+
+    Logger:info("_read_md_files", "cwd", cwd, "dir", dir)
+	while dir:find(cwd, 1, true) == 1 do
+		for _, md_file_name in ipairs(self.md_file_names) do
+			local md_path = dir .. "/" .. md_file_name
+			local file = io.open(md_path, "r")
+            Logger:info("_read_md_files#while#for", "md_path", md_path)
+			if file then
+				local content = file:read("*a")
+				file:close()
+				table.insert(self.ai_context, content)
+			end
+		end
+
+		if dir == cwd then
+			break
+		end
+
+		dir = vim.fn.fnamemodify(dir, ":h")
+        Logger:info("_read_md_files#while", "new dir selected", dir)
+	end
 end
 
 --- @param _99 _99.State
 --- @param location _99.Location
 --- @return self
 function Context:finalize(_99, location)
+    self:_read_md_files(location)
     table.insert(self.ai_context, _99.prompts.get_file_location(location))
     table.insert(self.ai_context, _99.prompts.get_range_text(location.range))
     table.insert(self.ai_context, _99.prompts.tmp_file_location(self.tmp_file))
