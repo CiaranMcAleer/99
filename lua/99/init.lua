@@ -11,6 +11,7 @@ local Languages = require("99.language")
 --- @field prompts _99.Prompts
 --- @field ai_stdout_rows number
 --- @field languages string[]
+--- @field display_errors boolean
 --- @field provider_override _99.Provider?
 --- @field __active_requests _99.Cleanup[]
 
@@ -22,6 +23,7 @@ local function create_99_state()
         prompts = require("99.prompt_settings"),
         ai_stdout_rows = 3,
         languages = { "lua" },
+        display_errors = false,
         __active_requests = {},
     }
 end
@@ -32,6 +34,7 @@ end
 --- @field md_files string[]?
 --- @field provider _99.Provider?
 --- @field debug_log_prefix string?
+--- @field display_errors? boolean
 
 --- unanswered question -- will i need to queue messages one at a time or
 --- just send them all...  So to prepare ill be sending around this state object
@@ -41,6 +44,7 @@ end
 --- @field prompts _99.Prompts
 --- @field ai_stdout_rows number
 --- @field languages string[]
+--- @field display_errors boolean
 --- @field provider_override _99.Provider?
 --- @field __active_requests _99.Cleanup[]
 local _99_State = {}
@@ -101,8 +105,8 @@ function _99.stop_all_requests()
     _99_state.__active_requests = {}
 end
 
---- As a warning do not use this function unless you intend to use it for
---- debugging purposes.  Any other use will likely result in this library
+--- as a warning do not use this function unless you intend to use it for
+--- debugging purposes.  any modifications to this object will likely result in this library
 --- not working properly
 --- @return _99.State
 function _99.__get_state()
@@ -128,6 +132,8 @@ function _99.setup(opts)
             _99.add_md_file(md)
         end
     end
+
+    _99_state.display_errors = opts.display_errors or false
 
     Languages.initialize(_99_state)
 end

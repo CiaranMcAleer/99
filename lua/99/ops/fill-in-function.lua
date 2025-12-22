@@ -6,6 +6,7 @@ local Mark = require("99.ops.marks")
 local Context = require("99.ops.context")
 local editor = require("99.editor")
 local RequestStatus = require("99.ops.request_status")
+local Window = require("99.window")
 
 --- @param res string
 --- @param location _99.Location
@@ -100,9 +101,15 @@ local function fill_in_function(_99)
                 return
             end
 
-            --- TODO: request_status should be morphed into an error
-            --- for a few seconds, or maintained until intentionally stopped...
             if not ok then
+                if _99.display_errors then
+                    Window.display_error(
+                        "Error encountered while processing fill_in_function\n"
+                            .. (
+                                response or "No Error text provided.  Check logs"
+                            )
+                    )
+                end
                 Logger:error(
                     "unable to fill in function, enable and check logger for more details"
                 )

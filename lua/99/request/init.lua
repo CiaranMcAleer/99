@@ -17,11 +17,12 @@ local function validate_opts(opts)
 end
 
 --- @alias _99.Request.State "ready" | "calling-model" | "parsing-result" | "updating-file" | "cancelled"
+--- @alias _99.Request.ResponseState "failed" | "success" | "cancelled"
 
 --- @class _99.ProviderObserver
 --- @field on_stdout fun(line: string): nil
 --- @field on_stderr fun(line: string): nil
---- @field on_complete fun(success: boolean, res: string): nil
+--- @field on_complete fun(status: _99.Request.ResponseState, res: string): nil
 
 --- @class _99.Provider
 --- @field make_request fun(self: _99.Provider, query: string, request: _99.Request, observer: _99.ProviderObserver)
@@ -35,11 +36,30 @@ local DevNullObserver = {
 
 local OpenCodeProvider = {}
 
+--- @param fn fun(...: any): nil
+--- @return fun(...: any): nil
+local function once(fn)
+    local called = false
+    return function(...)
+        if called then
+            return
+        end
+        called = true
+        fn(...)
+    end
+end
+
 --- @param query string
 ---@param request _99.Request
 ---@param observer _99.ProviderObserver?
 function OpenCodeProvider:make_request(query, request, observer)
     observer = observer or DevNullObserver
+    --- @param status _99.Request.ResponseState
+    ---@param text string
+    local once_complete = once(function(status, text)
+        observer.on_complete(status, text)
+    end)
+
     local id = get_id()
     Logger:debug("99#make_query", "id", id, "query", query)
     vim.system(
@@ -73,11 +93,20 @@ function OpenCodeProvider:make_request(query, request, observer)
         },
         function(obj)
             if request:is_cancelled() then
-                Logger:debug("on_complete: request has been cancelled", "id", id)
+                Logger:debug(
+                    "on_complete: request has been cancelled",
+                    "id",
+                    id
+                )
                 return
             end
             if obj.code ~= 0 then
-                observer.on_complete(false, "")
+                local str = string.format(
+                    "process exit code: %d\n%s",
+                    obj.code,
+                    vim.inspect(obj)
+                )
+                observer.on_complete(false, str)
                 Logger:fatal(
                     "opencode make_query failed",
                     "id",
