@@ -77,6 +77,11 @@ function RequestContext:_read_md_files()
     end
 end
 
+--- @return string[]
+function RequestContext:content()
+    return self.ai_context
+end
+
 --- @return self
 function RequestContext:finalize()
     self:_read_md_files()

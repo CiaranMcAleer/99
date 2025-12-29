@@ -176,6 +176,11 @@ end
 
 --- @param observer _99.ProviderObserver?
 function Request:start(observer)
+    self.context:finalize()
+    for _, content in ipairs(self.context.ai_context) do
+        self:add_prompt_content(content)
+    end
+
     local query = table.concat(self._content, "\n")
     observer = observer or DevNullObserver
 

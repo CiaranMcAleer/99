@@ -46,6 +46,8 @@ local function fill_in_function(context)
         return
     end
 
+    context.range = func.function_range
+
     local virt_line_count = context._99.ai_stdout_rows
     if virt_line_count >= 0 then
         context.marks.function_location = Mark.mark_func_body(buffer, func)
@@ -73,7 +75,7 @@ local function fill_in_function(context)
             request_status:push(line)
         end,
         on_complete = function(status, response)
-            logger:error("on_complete", "status", status, "response", response)
+            logger:info("on_complete", "status", status, "response", response)
             vim.schedule(clean_up)
 
             if status == "failed" then

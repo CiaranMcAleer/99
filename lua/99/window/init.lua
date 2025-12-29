@@ -72,6 +72,7 @@ local function create_floating_window(config)
         win_id = win_id,
         buf_id = buf_id,
     }
+    vim.wo[win_id].wrap = true
 
     table.insert(M.active_windows, window)
     return window
@@ -137,8 +138,8 @@ end
 function M.display_cancellation_message(text)
     local config = create_window_top_left_config()
     local window = create_floating_window(config)
-
     local lines = vim.split(text, "\n")
+
     vim.api.nvim_buf_set_lines(window.buf_id, 0, -1, false, lines)
 
     vim.api.nvim_buf_set_extmark(window.buf_id, nsid, 0, 0, {
