@@ -15,11 +15,13 @@ local M = {}
 ---@param _99 _99.State
 ---@return _99.Agents.Rules
 function M.rules(_99)
-  local cursor = helpers.ls(".cursor/rules")
+  local cursor = helpers.ls(_99.completion.cursor_rules)
   local custom = {}
   for _, path in ipairs(_99.completion.custom_rules or {}) do
-    local c = helpers.ls(path)
-    table.insert(custom, c)
+    local custom_rule = helpers.ls(path)
+    for _, c in ipairs(custom_rule) do
+      table.insert(custom, c)
+    end
   end
   return {
     cursor = cursor,

@@ -38,6 +38,7 @@ end
 --- @class _99.Completion
 --- @field source "cmp" | nil
 --- @field custom_rules string[] | nil
+--- @field cursor_rules string defaults to .cursor/rules
 
 --- @class _99.Options
 --- @field logger _99.Logger.Options?
@@ -271,6 +272,8 @@ function _99.setup(opts)
       source = nil,
       custom_rules = {},
     }
+  _99_state.completion.cursor_rules = _99_state.completion.cursor_rules
+    or ".cursor/rules/"
 
   vim.api.nvim_create_autocmd("VimLeavePre", {
     callback = function()

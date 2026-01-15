@@ -4,7 +4,8 @@ local M = {}
 --- @return _99.Agents.Rule[]
 function M.ls(dir)
   local cwd = vim.fs.joinpath(vim.uv.cwd(), dir)
-  local files = vim.fn.glob(cwd .. "/*.{mdc,md}", false, true)
+  local glob = vim.fs.joinpath(cwd, "/*.{mdc,md}")
+  local files = vim.fn.glob(glob, false, true)
   local rules = {}
 
   for _, file in ipairs(files) do
