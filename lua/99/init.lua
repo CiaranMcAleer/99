@@ -10,11 +10,15 @@ local Extensions = require("99.extensions")
 local Agents = require("99.extensions.agents")
 
 ---@param path_or_rule string | _99.Agents.Rule
+---@return _99.Agents.Rule | string
 local function expand(path_or_rule)
   if type(path_or_rule) == "string" then
     return vim.fn.expand(path_or_rule)
   end
-  return vim.fn.expand(path_or_rule.path)
+  return {
+    name = path_or_rule.name,
+    path = vim.fn.expand(path_or_rule.path),
+  }
 end
 
 --- @param opts _99.ops.Opts?

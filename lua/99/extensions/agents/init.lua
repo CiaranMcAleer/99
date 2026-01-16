@@ -36,8 +36,8 @@ function M.rules_to_items(rules)
   for _, rule in ipairs(rules.cursor or {}) do
     table.insert(items, rule)
   end
-  for _, custom_rules in ipairs(rules.custom or {}) do
-    table.insert(items, custom_rules)
+  for _, rule in ipairs(rules.custom or {}) do
+    table.insert(items, rule)
   end
   return items
 end
