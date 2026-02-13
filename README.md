@@ -9,7 +9,8 @@ It will happen that apis will disapear or be changed.  Sorry, this is an ALPHA p
 The AI client that Neovim deserves, built by those that still enjoy to code.
 
 # API
-* visual
+* visual (supports automatic comment-driven mode)
+* comment (new: generate code from intent comments)
 * search (upcoming, not ready yet)
 * debug (planned)
 
@@ -110,6 +111,12 @@ I make the assumption you are using Lazy
 				_99.visual()
 			end)
 
+            --- NEW: Comment-driven code generation
+            --- Place cursor on a comment describing what you want, then trigger
+			vim.keymap.set("n", "<leader>9c", function()
+				_99.comment()
+			end)
+
             --- if you have a request you dont want to make any changes, just cancel it
 			vim.keymap.set("v", "<leader>9s", function()
 				_99.stop_all_requests()
@@ -117,6 +124,26 @@ I make the assumption you are using Lazy
 		end,
 	},
 ```
+
+## Comment-Driven Code Generation (NEW)
+99 now supports a simplified, intent-driven workflow. Instead of structured prompt blocks, simply write a comment describing what you want:
+
+```lua
+-- FetchCache – Query the events database for records whose `title` or `description` 
+-- contain the String <query> and occur within <timeframe>. Return a JSON-serializable 
+-- list of event objects with id, title, start_time, end_time.
+```
+
+Place your cursor on the comment and run `<leader>9c` (or `<leader>9v` in visual mode - it auto-detects comments).
+
+**Features:**
+- **Async by default**: Runs in the background like all 99 operations
+- **Multi-line support**: Write detailed, multi-line comments
+- **Language agnostic**: Works with Lua, Python, JavaScript, TypeScript, Go, Java, C++, Ruby, Elixir
+- **Context aware**: Includes full file context for better AI understanding
+- **Non-intrusive**: Original visual selection flow still works
+
+See [COMMENT_DRIVEN_FLOW.md](./COMMENT_DRIVEN_FLOW.md) for detailed examples and usage.
 
 ## Completions
 When prompting, you can reference rules and files to add context to your request.
