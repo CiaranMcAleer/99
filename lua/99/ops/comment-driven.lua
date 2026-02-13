@@ -122,7 +122,7 @@ end
 local function build_comment_prompt(comment_text, context, start_row, end_row)
   return string.format(
     [[
-You receive a comment in neovim that describes what code to implement.
+You receive a comment in Neovim that describes what code to implement.
 The comment contains the user's intent and requirements.
 Generate code that implements the described behavior.
 
