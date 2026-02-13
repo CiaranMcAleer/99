@@ -14,9 +14,12 @@ local COMMENT_PATTERNS = {
   python = { single = "^%s*#+%s*(.*)$" },
   javascript = { single = "^%s*//+%s*(.*)$", multi_start = "^%s*/%*", multi_end = "%*/$" },
   typescript = { single = "^%s*//+%s*(.*)$", multi_start = "^%s*/%*", multi_end = "%*/$" },
+  typescriptreact = { single = "^%s*//+%s*(.*)$", multi_start = "^%s*/%*", multi_end = "%*/$" },
+  javascriptreact = { single = "^%s*//+%s*(.*)$", multi_start = "^%s*/%*", multi_end = "%*/$" },
   go = { single = "^%s*//+%s*(.*)$", multi_start = "^%s*/%*", multi_end = "%*/$" },
   java = { single = "^%s*//+%s*(.*)$", multi_start = "^%s*/%*", multi_end = "%*/$" },
   cpp = { single = "^%s*//+%s*(.*)$", multi_start = "^%s*/%*", multi_end = "%*/$" },
+  c = { single = "^%s*//+%s*(.*)$", multi_start = "^%s*/%*", multi_end = "%*/$" },
   ruby = { single = "^%s*#+%s*(.*)$" },
   elixir = { single = "^%s*#+%s*(.*)$" },
 }
