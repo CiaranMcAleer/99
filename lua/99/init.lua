@@ -377,6 +377,24 @@ end
 function _99.visual(opts)
   opts = process_opts(opts)
   local context = get_context("visual")
+  
+  -- Check if cursor is on a comment for comment-driven flow
+  local comment_ops = require("99.ops.comment-driven")
+  local cursor = Point:from_cursor()
+  local comment_text, _, _ = comment_ops.extract_comment_at_cursor(
+    context.buffer,
+    cursor,
+    context.file_type
+  )
+  
+  -- If we have a comment at cursor and no explicit prompt provided, use comment-driven flow
+  if comment_text and not opts.additional_prompt then
+    context.logger:debug("Using comment-driven flow")
+    ops.comment_driven(context, opts)
+    return
+  end
+  
+  -- Otherwise, fall back to original visual selection behavior
   local function perform_range()
     set_selection_marks()
     local range = Range.from_visual_selection()
@@ -386,6 +404,19 @@ function _99.visual(opts)
     perform_range()
   else
     capture_prompt(perform_range, "Visual", context, opts)
+  end
+end
+
+--- Comment-driven code generation
+--- Place cursor on or near a comment describing what to implement
+--- @param opts _99.ops.Opts?
+function _99.comment(opts)
+  opts = process_opts(opts)
+  local context = get_context("comment_driven")
+  if opts.additional_prompt then
+    ops.comment_driven(context, opts)
+  else
+    capture_prompt(ops.comment_driven, "Comment", context, opts)
   end
 end
 

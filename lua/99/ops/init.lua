@@ -10,4 +10,5 @@ return {
   search = require("99.ops.search"),
   implement_fn = require("99.ops.implement-fn"),
   over_range = require("99.ops.over-range"),
+  comment_driven = require("99.ops.comment-driven").comment_driven,
 }
